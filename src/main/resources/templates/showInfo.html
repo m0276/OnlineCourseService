@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>course List</title>
+</head>
+<body>
+<h1>course</h1>
+<ul>
+    <li th:each="course : ${coursesList}">
+        course name : " <span th:text="${course.getCourseName()}"></span> " <br>
+        course join date : " <span th:text="${course.getGetClassDate()}"></span> " <br>
+        course fee :  <span th:text="${course.getFee()}"></span> <br>
+        course take week :  <span th:text="${course.getNeedWeek()}"></span> <br>
+        course popular :  <span th:text="${course.getPopular()}"></span> <br>
+
+        <a th:href="@{https://sll.seoul.go.kr/lms/jce/doDetailJceOnlineInfo.do(main_se='jce', course_id=${course.getCourseId()}, class_no=${course.getClassNumber()}, course_gubun=${course.getCourseGubun()}, asp_id=${course.getAspId()},course_category_id='',page='',mnid=202412335776)}">신청하기</a>
+    </li>
+</ul>
+
+</body>
+</html>
