@@ -2,8 +2,10 @@ package MJLee.onlineCourseService.service;
 
 
 import MJLee.onlineCourseService.dto.OnlineClassDto;
+import jakarta.transaction.Transactional;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,11 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Transactional
 @Service
 public class OnlineClassService {
     @Value("${url}")
@@ -97,31 +102,7 @@ public class OnlineClassService {
                     .append(key).append("/").append(data).append("/")
                     .append("OnlineCoures").append("/")
                     .append("1").append("/").append("1000");
-            URL url = (new URI(urlStr.toString())).toURL();
-
-            JSONObject jsonObject = new JSONObject(readStreamToString(getNetworkConnection((HttpURLConnection) url.openConnection())))
-                    .getJSONObject("OnlineCoures");
-
-            JSONArray jsonArray = jsonObject.getJSONArray("row");
-
-            for(int i = 0 ; i < jsonArray.length() ; i++){
-                OnlineClassDto classDto = new OnlineClassDto();
-                JSONObject object = jsonArray.getJSONObject(i);
-
-                classDto.setCategory(object.getString("CATEGORY_NM2"));
-                classDto.setGetClassDate(object.getString("COURSE_REQUEST_DT"));
-                classDto.setFee(object.getString("FEE"));
-                classDto.setPopular(object.getString("POPULARITY_YN").equals("Y"));
-                classDto.setCourseId(object.getString("COURSE_ID"));
-                classDto.setAspId("ASP_ID");
-                classDto.setNeedWeek(object.getString("WEEK_USE_YN").equals("Y") ? object.getString("WEEK_MK_CNT") : "0");
-                classDto.setAspId(object.getString("ASP_ID"));
-                classDto.setClassNumber(object.getString("CLASS_NO"));
-                classDto.setCourseGubun(object.getString("COURSE_GUBUN"));
-                classDto.setCourseName(object.getString("COURSE_NM"));
-
-                list.add(classDto);
-            }
+            return makeList(urlStr,list);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -137,31 +118,7 @@ public class OnlineClassService {
                     .append("OnlineCoures").append("/")
                     .append("1").append("/").append("1000").append("/")
                     .append(category);
-            URL url = (new URI(urlStr.toString())).toURL();
-
-            JSONObject jsonObject = new JSONObject(readStreamToString(getNetworkConnection((HttpURLConnection) url.openConnection())))
-                    .getJSONObject("OnlineCoures");
-
-            JSONArray jsonArray = jsonObject.getJSONArray("row");
-
-            for(int i = 0 ; i < jsonArray.length() ; i++){
-                OnlineClassDto classDto = new OnlineClassDto();
-                JSONObject object = jsonArray.getJSONObject(i);
-
-                classDto.setCategory(object.getString("CATEGORY_NM2"));
-                classDto.setGetClassDate(object.getString("COURSE_REQUEST_DT"));
-                classDto.setFee(object.getString("FEE"));
-                classDto.setPopular(object.getString("POPULARITY_YN").equals("Y"));
-                classDto.setCourseId(object.getString("COURSE_ID"));
-                classDto.setAspId("ASP_ID");
-                classDto.setNeedWeek(object.getString("WEEK_USE_YN").equals("Y") ? object.getString("WEEK_MK_CNT") : "0");
-                classDto.setAspId(object.getString("ASP_ID"));
-                classDto.setClassNumber(object.getString("CLASS_NO"));
-                classDto.setCourseGubun(object.getString("COURSE_GUBUN"));
-                classDto.setCourseName(object.getString("COURSE_NM"));
-
-                list.add(classDto);
-            }
+            return makeList(urlStr,list);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -170,13 +127,25 @@ public class OnlineClassService {
         return list;
     }
 
-    private List<OnlineClassDto> makeNameList(String name, ArrayList<OnlineClassDto> list) throws URISyntaxException, IOException {
+    private List<OnlineClassDto> makeNameList(String name, List<OnlineClassDto> list) throws URISyntaxException, IOException {
         try{
             StringBuilder urlStr = new StringBuilder(startUrl).append("/")
                     .append(key).append("/").append(data).append("/")
                     .append("OnlineCoures").append("/")
-                    .append("1").append("/").append("1000").append("/")
+                    .append("1").append("/").append("1000").append("/").append(URLEncoder.encode(" ", StandardCharsets.UTF_8))
                     .append("/").append(name);
+            return makeList(urlStr,list);
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    private List<OnlineClassDto> makeList(StringBuilder urlStr,List<OnlineClassDto> list){
+        try{
             URL url = (new URI(urlStr.toString())).toURL();
 
             JSONObject jsonObject = new JSONObject(readStreamToString(getNetworkConnection((HttpURLConnection) url.openConnection())))
@@ -206,7 +175,6 @@ public class OnlineClassService {
         } catch (Exception e){
             e.printStackTrace();
         }
-
         return list;
     }
 
@@ -240,4 +208,6 @@ public class OnlineClassService {
 
         return (result.toString());
     }
+
+
 }

@@ -1,11 +1,15 @@
 package MJLee.onlineCourseService.controller;
 
 import MJLee.onlineCourseService.service.OnlineClassService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +23,7 @@ public class OnlineClassController {
     public OnlineClassController(OnlineClassService onlineClassService) {
         this.onlineClassService = onlineClassService;
     }
-
+    // 전체 조회, 카테고리별 조회, 강의명 조회, 가격, 진행주차 별로 조회 가능한 메서드 생성
     @GetMapping
     public ModelAndView findAll(Model model){
         model.addAttribute("coursesList",onlineClassService.findAll());
