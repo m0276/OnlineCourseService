@@ -46,6 +46,15 @@ public class OnlineClassController {
             principal = "anonymousUser";
         }
 
+        boolean isLoggedIn;
+        try{
+           isLoggedIn  = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        } catch (NullPointerException e){
+            isLoggedIn = false;
+        }
+
+        model.addAttribute("isLoggedIn", isLoggedIn);
+
         if(!principal.equals("anonymousUser")){
             model.addAttribute("coursesList",onlineClassService.findAllWithSort(userName));
         }

@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>login</title>
+  <title>Login</title>
 </head>
 <body>
-  login please!
+Login Page
+<form action="/login" method="post" name="loginForm">
+  <label for="username"></label><input id="username" type="text" name="username" placeholder="username" />
+  <label for="password"></label><input id="password" type="text" name="password" placeholder="password" />
+  <button id="submit" value="login">Login</button>
+</form>
 </body>
 </html>

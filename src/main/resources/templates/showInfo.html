@@ -2,41 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>course List</title>
+    <title>Course List</title>
     <script>
         // 링크 클릭 시 카운트를 서버로 전송하는 함수
         function updateClickCount(courseId) {
-            fetch('/updateInterested', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ courseId: courseId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);  // 서버 응답 로그
-            })
-            .catch(error => console.error('Error:', error));
+            const isLoggedIn = /*[[${isLoggedIn}]]*/ false; // 서버에서 로그인 상태를 가져옴
+
+            // 로그인한 경우에만 카운트 업데이트
+            if (isLoggedIn) {
+                fetch('/updateInterested', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ courseId: courseId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);  // 서버 응답 로그
+                })
+                .catch(error => console.error('Error:', error));
+            }
         }
     </script>
 </head>
 <body>
-<h1>course</h1>
+<h1>Course</h1>
 <ul>
     <li th:each="course : ${coursesList}">
-        course name : " <span th:text="${course.getCourseName()}"></span> " <br>
-        course join date : " <span th:text="${course.getGetClassDate()}"></span> " <br>
-        course fee :  <span th:text="${course.getFee()}"></span> <br>
-        course take week :  <span th:text="${course.getNeedWeek()}"></span> <br>
-        course popular :  <span th:text="${course.getPopular()}"></span> <br>
+        Course Name: "<span th:text="${course.getCourseName()}"></span>" <br>
+        Course Join Date: "<span th:text="${course.getGetClassDate()}"></span>" <br>
+        Course Fee: <span th:text="${course.getFee()}"></span> <br>
+        Course Take Week: <span th:text="${course.getNeedWeek()}"></span> <br>
+        Course Popular: <span th:text="${course.getPopular()}"></span> <br>
 
-        <a th:href="@{https://sll.seoul.go.kr/lms/jce/doDetailJceOnlineInfo.do(main_se='jce', course_id=${course.getCourseId()}, class_no=${course.getClassNumber()}, course_gubun=${course.getCourseGubun()}, asp_id=${course.getAspId()},course_category_id='',page='',mnid=202412335776)}"
+        <a th:href="@{https://sll.seoul.go.kr/lms/jce/doDetailJceOnlineInfo.do(main_se='jce', course_id=${course.getCourseId()}, class_no=${course.getClassNumber()}, course_gubun=${course.getCourseGubun()}, asp_id=${course.getAspId()}, course_category_id='', page='', mnid=202412335776)}"
            th:data-course-id="${course.getCourseId()}"
            onclick="updateClickCount(this.getAttribute('data-course-id'));">신청하기</a>
     </li>
 </ul>
-
-
 </body>
 </html>
