@@ -1,10 +1,17 @@
 package MJLee.onlineCourseService.controller;
 
+import MJLee.onlineCourseService.dto.UserDto;
+import MJLee.onlineCourseService.entity.User;
+import MJLee.onlineCourseService.service.LoginService;
 import MJLee.onlineCourseService.service.OnlineClassService;
+import MJLee.onlineCourseService.service.UserService;
+import MJLee.onlineCourseService.util.LoginUtil;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +24,34 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 @RequestMapping("/onlineClass")
 public class OnlineClassController {
+
     OnlineClassService onlineClassService;
 
     @Autowired
     public OnlineClassController(OnlineClassService onlineClassService) {
         this.onlineClassService = onlineClassService;
     }
+
+    // pathvariable로 받지 말고 로그인 여부를 판별한 뒤 로그인 한 유저의 이름을 받는 순으로 하는게 좀 더 좋아보임
     // 전체 조회, 카테고리별 조회, 강의명 조회, 가격, 진행주차 별로 조회 가능한 메서드 생성
     @GetMapping
     public ModelAndView findAll(Model model){
-        model.addAttribute("coursesList",onlineClassService.findAll());
+        Object principal;
+        String userName = "";
+        try{
+            principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            UserDetails userDetails = (UserDetails)principal;
+            userName = userDetails.getUsername();
+        } catch (NullPointerException e){
+            principal = "anonymousUser";
+        }
+
+        if(!principal.equals("anonymousUser")){
+            model.addAttribute("coursesList",onlineClassService.findAllWithSort(userName));
+        }
+        else{
+            model.addAttribute("coursesList",onlineClassService.findAll());
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("showInfo");
 

@@ -32,6 +32,13 @@ public class OnlineClassService {
     @Value("${dataType}")
     String data;
 
+    CategoryInterestedService service;
+
+    @Autowired
+    public OnlineClassService(CategoryInterestedService service) {
+        this.service = service;
+    }
+
     public List<OnlineClassDto> findAll(){
         try {
             return makeAllList(new ArrayList<>());
@@ -94,6 +101,31 @@ public class OnlineClassService {
 
         return new ArrayList<>();
 
+    }
+
+    //로그인 시 개인화 또는 인기도로 추천
+    public List<OnlineClassDto> findAllWithSort(String userName) {
+        //https://velog.io/@ie8907/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C-Recommender-System 참고하여 구현해보기
+        try{
+           List<OnlineClassDto> all = makeAllList(new ArrayList<>());
+           List<OnlineClassDto> interested = service.findByUserName(userName);
+           if(interested == null){
+               interested = new ArrayList<>();
+               for(OnlineClassDto dto : all){
+                   if(dto.getPopular()){
+                       interested.add(dto);
+                   }
+               }
+           }
+            all.removeAll(interested);
+
+            interested.addAll(all);
+            return interested;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
     }
 
     private List<OnlineClassDto> makeAllList(List<OnlineClassDto> list){
@@ -208,6 +240,7 @@ public class OnlineClassService {
 
         return (result.toString());
     }
+
 
 
 }

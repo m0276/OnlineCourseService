@@ -12,10 +12,10 @@ public class CategoryInterested {
     Long id;
 
     @Column
-    String userEmail;
+    String userName;
 
     @Column
-    String category;
+    String courseId;
 
     @Column
     Long count;

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-public class User {
+public class User{
     @Id
     String email;
 

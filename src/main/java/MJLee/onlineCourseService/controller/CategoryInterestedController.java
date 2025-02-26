@@ -21,11 +21,4 @@ public class CategoryInterestedController {
     service.save(dto);
   }
 
-  //Fixme
-  private CategoryInterestedDto findUserEmail(){
-    return null;
-
-    //https://chaeyami.tistory.com/251 참고하여 구현해보기
-  }
-
 }
