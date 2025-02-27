@@ -12,4 +12,15 @@ public class UserDto {
     String password;
     LocalDateTime createdAt;
     String newPassword;
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+            "nickname='" + nickname + '\'' +
+            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", createdAt=" + createdAt +
+            ", newPassword='" + newPassword + '\'' +
+            '}';
+    }
 }

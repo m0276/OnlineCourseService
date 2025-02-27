@@ -1,5 +1,6 @@
 package MJLee.onlineCourseService.entity;
 
+import MJLee.onlineCourseService.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,7 +18,7 @@ public class User{
     @Id
     String email;
 
-    @Column
+    @Column(nullable = false)
     String password;
 
     @Column
@@ -25,4 +26,6 @@ public class User{
 
     @Column(unique = true)
     String nickname;
+
+    String role = String.valueOf(Role.ANONYMOUS);
 }

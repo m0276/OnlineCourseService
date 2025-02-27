@@ -47,7 +47,7 @@ public class SecurityConfig {
         )
         .formLogin(form -> form
             .loginPage("/onlineClass/login")
-            .loginProcessingUrl("/loginProcess")
+            .loginProcessingUrl("/onlineClass/login")
             .defaultSuccessUrl("/onlineClass", true)
             .permitAll()
         )

@@ -4,25 +4,20 @@
     <meta charset="UTF-8">
     <title>Course List</title>
     <script>
-        // 링크 클릭 시 카운트를 서버로 전송하는 함수
-        function updateClickCount(courseId) {
-            const isLoggedIn = /*[[${isLoggedIn}]]*/ false; // 서버에서 로그인 상태를 가져옴
-
-            // 로그인한 경우에만 카운트 업데이트
-            if (isLoggedIn) {
-                fetch('/updateInterested', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ courseId: courseId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data.message);  // 서버 응답 로그
-                })
-                .catch(error => console.error('Error:', error));
-            }
+        function openInNewTabAndUpdateClickCount(courseId, event) {
+            fetch("/updateInterested", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ courseId: courseId })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);  // 서버 응답 로그
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </head>
@@ -37,8 +32,8 @@
         Course Popular: <span th:text="${course.getPopular()}"></span> <br>
 
         <a th:href="@{https://sll.seoul.go.kr/lms/jce/doDetailJceOnlineInfo.do(main_se='jce', course_id=${course.getCourseId()}, class_no=${course.getClassNumber()}, course_gubun=${course.getCourseGubun()}, asp_id=${course.getAspId()}, course_category_id='', page='', mnid=202412335776)}"
-           th:data-course-id="${course.getCourseId()}"
-           onclick="updateClickCount(this.getAttribute('data-course-id'));">신청하기</a>
+           th:data-course-id="${course.getCourseId()}" target = "_blank"
+           onclick="openInNewTabAndUpdateClickCount(this.getAttribute('data-course-id'));">신청하기</a>
     </li>
 </ul>
 </body>

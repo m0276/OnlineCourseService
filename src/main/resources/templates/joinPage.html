@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<form id="myForm">
+  <label for="nickname"></label><input type="text" name="nickname" id="nickname" placeholder="nickname" required>
+  <label for="email"></label><input type="email" name="email" id="email" placeholder="Email" required>
+  <label for="password"></label><input type="password" name="password" id="password" placeholder="Password" required>
+  <button type="submit">Submit</button>
+</form>
+
+</body>
+<script>
+  document.getElementById("myForm").addEventListener("submit", function(event) {
+    event.preventDefault();  // 폼의 기본 제출 동작을 막습니다.
+
+    // 폼 데이터 가져오기
+    const formData = new FormData(event.target);
+
+    // FormData를 JSON 객체로 변환
+    const jsonData = {};
+    formData.forEach((value, key) => {
+      jsonData[key] = value;
+    });
+
+    // JSON 데이터 전송
+    fetch('/onlineClass/join', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(jsonData),
+      redirect: 'follow'  // 리다이렉트 처리
+    })
+    .then(response => {
+      if (response.redirected) {
+        window.location.href = response.url;  // 리다이렉트 URL로 이동
+      } else {
+        return response.json();  // JSON 응답 처리
+      }
+    })
+    .then(data => {
+      console.log('Success:', data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+
+
+  });
+
+</script>
+</html>
