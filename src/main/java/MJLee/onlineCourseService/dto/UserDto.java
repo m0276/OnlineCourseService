@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserDto {
-    String nickname;
+    String userName;
     String email;
     String password;
     LocalDateTime createdAt;
@@ -16,7 +16,7 @@ public class UserDto {
     @Override
     public String toString() {
         return "UserDto{" +
-            "nickname='" + nickname + '\'' +
+            "userName='" + userName + '\'' +
             ", email='" + email + '\'' +
             ", password='" + password + '\'' +
             ", createdAt=" + createdAt +

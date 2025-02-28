@@ -1,22 +1,12 @@
 package MJLee.onlineCourseService.controller;
 
-import MJLee.onlineCourseService.dto.UserDto;
-import MJLee.onlineCourseService.entity.User;
-import MJLee.onlineCourseService.service.LoginService;
 import MJLee.onlineCourseService.service.OnlineClassService;
-import MJLee.onlineCourseService.service.UserService;
-import MJLee.onlineCourseService.util.LoginUtil;
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -43,10 +33,10 @@ public class OnlineClassController {
             UserDetails userDetails = (UserDetails)principal;
             userName = userDetails.getUsername();
         } catch (NullPointerException e){
-            principal = "anonymousUser";
+            principal = "";
         }
 
-        if(!principal.equals("anonymousUser")){
+        if(!principal.equals("")){
             model.addAttribute("coursesList",onlineClassService.findAllWithSort(userName));
         }
         else{

@@ -4,16 +4,17 @@ import MJLee.onlineCourseService.dto.UserDto;
 import MJLee.onlineCourseService.entity.User;
 import MJLee.onlineCourseService.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import org.springframework.util.StringUtils;
 
 @Transactional
 @Service
@@ -27,20 +28,25 @@ public class UserService {
     }
 
     public void save(UserDto userDto){
-        User user = new User();
+        if (findUser(userDto) != null){
+            throw new RuntimeException("already join!");
+        }
+
+        User user = new User(userDto.getUserName(), userDto.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_VISITOR")));
         user.setEmail(userDto.getEmail());
+        user.setUserName(userDto.getUserName());
         user.setPassword(userDto.getPassword());
         user.setCreatedAt(LocalDateTime.now());
-        user.setNickname(userDto.getNickname());
-        user.setRole("ANONYMOUS");
+        user.setRole("VISITOR");
+
         repository.save(user);
     }
 
     public UserDto findUser(UserDto userDto) {
-        if(repository.findByNickname(userDto.getNickname()).isPresent()){
-            User user = repository.findByNickname(userDto.getNickname()).get();
+        if(repository.findByUserName(userDto.getUserName()).isPresent()){
+            User user = repository.findByUserName(userDto.getUserName()).get();
             UserDto userDto1 = new UserDto();
-            userDto1.setNickname(user.getNickname());
+            userDto1.setUserName(user.getUserName());
             userDto1.setEmail(user.getEmail());
             userDto1.setPassword(user.getPassword());
             userDto1.setCreatedAt(user.getCreatedAt());
@@ -50,22 +56,9 @@ public class UserService {
         return null;
     }
 
-    public void updateStatus(UserDto userDto) {
-        //System.out.println(userDto);
-        if(repository.findByNickname(userDto.getNickname()).isPresent()){
-            User user = repository.findByNickname(userDto.getNickname()).get();
-            if(user.getRole().equals("ANONYMOUS")) user.setRole("USER");
-            else user.setRole("ANONYMOUS");
-            repository.save(user);
-        }
-        else{
-            throw new RuntimeException("Can't update");
-        }
-    }
-
     public void update(UserDto userDto) {
-        if(repository.findByNickname(userDto.getNickname()).isPresent()){
-            User user = repository.findByNickname(userDto.getNickname()).get();
+        if(repository.findByUserName(userDto.getUserName()).isPresent()){
+            User user = repository.findByUserName(userDto.getUserName()).get();
             user.setPassword(userDto.getNewPassword());
             repository.save(user);
         }
@@ -75,21 +68,19 @@ public class UserService {
     }
 
     public void delete(UserDto userDto) {
-        if(repository.findByNickname(userDto.getNickname()).isPresent()){
-            repository.deleteByNickname(userDto.getNickname());
+        if(repository.findByUserName(userDto.getUserName()).isPresent()){
+            repository.deleteByUserName(userDto.getUserName());
             return;
         }
 
         throw new RuntimeException("Can't update");
     }
 
-    private Collection<GrantedAuthority> createAuthorities(String roles){
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-        for(String role : roles.split(",")){
-            if (!StringUtils.hasText(role)) continue;
-            authorities.add(new SimpleGrantedAuthority(role));
+    private boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return false;
         }
-        return authorities;
+        return authentication.isAuthenticated();
     }
 }

@@ -1,48 +1,48 @@
 package MJLee.onlineCourseService.controller;
 
 import MJLee.onlineCourseService.dto.UserDto;
-import MJLee.onlineCourseService.service.LoginService;
-import MJLee.onlineCourseService.util.LoginUtil;
+import MJLee.onlineCourseService.service.PrincipalDetailService;
+import MJLee.onlineCourseService.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/onlineClass")
 public class LoginController {
 
-  private final LoginService service;
+  private final UserService service;
 
   @GetMapping("/login")
   public String loginPage(){
     return "loginPage";
   }
 
-//  @GetMapping("/login/{userName}")
-//  public void login(@PathVariable String userName){
-//    service.loadUserByUsername(userName);
-//    //return "redirect:/";
+//  @PostMapping("/login")
+//  public String login(@RequestParam String userName, @RequestParam String password) {
+//    try {
+//      System.out.println(detailService.loadUserByUsername(userName).getAuthorities());
+//      if(isAuthenticated() || detailService.loadUserByUsername(userName).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+//        return "redirect:/onlineClass";
+//      }
+//      else{
+//        return "redirect:/onlineClass/login";
+//      }
+//
+//    } catch (UsernameNotFoundException e) {
+//      return "redirect:/onlineClass/login";
+//    }
 //  }
-
-  @PostMapping("/login")
-  public String login(@RequestParam String username) {
-    try {
-
-      service.loadUserByUsername(username);
-      return "redirect:/onlineClass";
-
-    } catch (UsernameNotFoundException e) {
-      return "redirect:/onlineClass/login";
-    }
-  }
 
   @GetMapping("/join")
   public String joinCreate(){
@@ -51,9 +51,17 @@ public class LoginController {
 
   @PostMapping("/join")
   public String join(@RequestBody UserDto userDto){
-    service.join(userDto);
+    service.save(userDto);
 
     return "redirect:/";
   }
 
+
+//  private boolean isAuthenticated() {
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+//      return false;
+//    }
+//    return authentication.isAuthenticated();
+//  }
 }

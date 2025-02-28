@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Role {
   USER ("ROLE_USER"),
-  ANONYMOUS("ROLE_ANONYMOUS");
+  VISITOR("ROLE_VISITOR");
 
   private final String roles;
 
