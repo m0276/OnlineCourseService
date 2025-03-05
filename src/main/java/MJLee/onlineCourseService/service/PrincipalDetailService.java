@@ -1,12 +1,17 @@
 package MJLee.onlineCourseService.service;
 
-//import MJLee.onlineCourseService.PrincipalDetail;
 import MJLee.onlineCourseService.repository.UserRepository;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,17 +27,14 @@ public class PrincipalDetailService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User principal = userRepository.findByUserName(username)
-        .orElseThrow(()->{
-          return new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + username);
-        });
+    MJLee.onlineCourseService.entity.User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-    UserDetails userDts = User.builder()
-        .username(principal.getUsername())
-        .password(principal.getPassword())
-        .roles("USER")	//마지막에 권한 주기
-        .build();
-
-    return userDts;  //시큐리티의 세션이 유저 정보가 저장이 됨.
+    // 사용자 정보로 UserDetails 객체 생성
+    return new User(
+        user.getUsername(),
+        user.getPassword(),
+        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+    );
   }
 }

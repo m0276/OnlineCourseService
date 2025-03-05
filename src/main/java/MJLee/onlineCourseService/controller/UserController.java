@@ -27,7 +27,7 @@ public class UserController {
   @GetMapping("/{userNickName}")
   public ModelAndView userInfo(@PathVariable String userNickName, Model model){
     UserDto userDto = new UserDto();
-    userDto.setUserName(userNickName);
+    userDto.setUsername(userNickName);
     model.addAttribute("user",userService.findUser(userDto));
     ModelAndView modelAndView = new ModelAndView();
     modelAndView.setViewName("userInfo");
@@ -63,7 +63,7 @@ public class UserController {
   public ResponseEntity<Void> delete(@PathVariable String userNickName) {
     try {
       UserDto userDto = new UserDto();
-      userDto.setUserName(userNickName);
+      userDto.setUsername(userNickName);
       userService.delete(userDto);
       return ResponseEntity.status(HttpStatus.OK).build();
     } catch (Exception e) {

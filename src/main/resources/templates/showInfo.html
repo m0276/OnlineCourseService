@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="#">
     <title>Course List</title>
     <script>
         function openInNewTabAndUpdateClickCount(courseId, event) {
@@ -29,10 +30,11 @@
         Course Join Date: "<span th:text="${course.getGetClassDate()}"></span>" <br>
         Course Fee: <span th:text="${course.getFee()}"></span> <br>
         Course Take Week: <span th:text="${course.getNeedWeek()}"></span> <br>
+        Course Category: <span th:text="${course.getCategory()}"></span> <br>
         Course Popular: <span th:text="${course.getPopular()}"></span> <br>
 
         <a th:href="@{https://sll.seoul.go.kr/lms/jce/doDetailJceOnlineInfo.do(main_se='jce', course_id=${course.getCourseId()}, class_no=${course.getClassNumber()}, course_gubun=${course.getCourseGubun()}, asp_id=${course.getAspId()}, course_category_id='', page='', mnid=202412335776)}"
-           th:data-course-id="${course.getCourseId()}" target = "_blank"
+           th:data-course-id="${course.getCategory()}" target = "_blank"
            onclick="openInNewTabAndUpdateClickCount(this.getAttribute('data-course-id'));">신청하기</a>
     </li>
 </ul>

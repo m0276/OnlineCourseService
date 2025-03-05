@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CategoryInterestedDto {
-  String userName;
+  String username;
   String courseId;
   Long count;
 }

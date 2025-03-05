@@ -23,26 +23,10 @@ public class LoginController {
 
   private final UserService service;
 
-  @GetMapping("/login")
+  @GetMapping("/loginPage")
   public String loginPage(){
     return "loginPage";
   }
-
-//  @PostMapping("/login")
-//  public String login(@RequestParam String userName, @RequestParam String password) {
-//    try {
-//      System.out.println(detailService.loadUserByUsername(userName).getAuthorities());
-//      if(isAuthenticated() || detailService.loadUserByUsername(userName).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
-//        return "redirect:/onlineClass";
-//      }
-//      else{
-//        return "redirect:/onlineClass/login";
-//      }
-//
-//    } catch (UsernameNotFoundException e) {
-//      return "redirect:/onlineClass/login";
-//    }
-//  }
 
   @GetMapping("/join")
   public String joinCreate(){
@@ -55,6 +39,24 @@ public class LoginController {
 
     return "redirect:/";
   }
+
+
+
+//  @PostMapping("/login")
+//  public String login(@RequestParam String username, @RequestParam String password) {
+//    try {
+//      System.out.println(detailService.loadUserByUsername(username).getAuthorities());
+//      if(isAuthenticated() || detailService.loadUserByUsername(username).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+//        return "redirect:/onlineClass";
+//      }
+//      else{
+//        return "redirect:/onlineClass/login";
+//      }
+//
+//    } catch (UsernameNotFoundException e) {
+//      return "redirect:/onlineClass/login";
+//    }
+//  }
 
 
 //  private boolean isAuthenticated() {

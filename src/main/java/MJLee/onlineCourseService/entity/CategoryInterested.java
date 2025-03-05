@@ -13,7 +13,7 @@ public class CategoryInterested {
     Long id;
 
     @Column
-    String userName;
+    String username;
 
     @Column
     String courseId;

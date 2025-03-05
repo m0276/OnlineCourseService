@@ -20,10 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Setter
 @Getter
 @Table(name = "user")
-public class User extends org.springframework.security.core.userdetails.User {
-
-    @Serial
-    private static final long serialVersionUID = -7088409102501318308L;
+public class User{
     @Id
     String email;
 
@@ -34,21 +31,9 @@ public class User extends org.springframework.security.core.userdetails.User {
     LocalDateTime createdAt;
 
     @Column(unique = true)
-    String userName;
+    String username;
 
     @Column
     String role;
 
-    public User() {
-        super("Visitor", "0000", Collections.emptyList());
-        this.createdAt = LocalDateTime.now();
-        this.userName = "Visitor";
-        this.password = "0000";
-        this.role = "VISITOR";
-    }
-
-    public User(String username, String password,
-        Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
-    }
 }

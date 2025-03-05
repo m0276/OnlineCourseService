@@ -6,8 +6,6 @@ import MJLee.onlineCourseService.entity.CategoryInterested;
 import MJLee.onlineCourseService.repository.CategoryInterestedRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,11 +21,12 @@ public class CategoryInterestedService {
     }
 
     public void save(CategoryInterestedDto dto) {
-        List<CategoryInterested> list = repository.findByUserName(dto.getUserName());
+        List<CategoryInterested> list = repository.findByUsername(dto.getUsername());
         CategoryInterested categoryInterested = new CategoryInterested();
+
         if(list == null || list.isEmpty()){
             categoryInterested.setCourseId(dto.getCourseId());
-            categoryInterested.setUserName(dto.getUserName());
+            categoryInterested.setUsername(dto.getUsername());
             categoryInterested.setCount(1L);
         }
         else{
@@ -39,25 +38,25 @@ public class CategoryInterestedService {
                 }
             }
 
+            if(categoryInterested.getCount() == null){
+                categoryInterested.setCount(1L);
+                categoryInterested.setCourseId(dto.getCourseId());
+                categoryInterested.setUsername(dto.getUsername());
+            }
         }
         repository.save(categoryInterested);
     }
 
-    public List<OnlineClassDto> findByUserName(String userName){
-        List<CategoryInterested> list = repository.findByUserName(userName);
+    public List<String> findByUsername(String username){
+        List<CategoryInterested> list = repository.findByUsername(username);
         if(list.isEmpty()) return null;
 
-        list.sort(new Comparator<CategoryInterested>() {
-          @Override
-          public int compare(CategoryInterested o1, CategoryInterested o2) {
-            return o1.getCount().intValue() - o2.getCount().intValue();
-          }
-        });
-        List<OnlineClassDto> returnArr = new ArrayList<>();
+        list.sort((o1, o2) -> o1.getCount().intValue() - o2.getCount().intValue());
+
+        List<String> returnArr = new ArrayList<>();
+
         for(CategoryInterested categoryInterested : list){
-            OnlineClassDto dto = new OnlineClassDto();
-            dto.setCourseId(categoryInterested.getCourseId());
-            returnArr.add(dto);
+            returnArr.add(categoryInterested.getCourseId());
         }
 
         return returnArr;

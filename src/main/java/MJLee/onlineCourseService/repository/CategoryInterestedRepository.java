@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryInterestedRepository extends JpaRepository<CategoryInterested, String> {
-  List<CategoryInterested> findByUserName(String userName);
+  List<CategoryInterested> findByUsername(String username);
 }

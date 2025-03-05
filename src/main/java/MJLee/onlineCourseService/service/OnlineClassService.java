@@ -104,23 +104,25 @@ public class OnlineClassService {
     }
 
     //로그인 시 개인화 또는 인기도로 추천
-    public List<OnlineClassDto> findAllWithSort(String userName) {
-        //https://velog.io/@ie8907/%EC%B6%94%EC%B2%9C-%EC%8B%9C%EC%8A%A4%ED%85%9C-Recommender-System 참고하여 구현해보기
+    public List<OnlineClassDto> findAllWithSort(String username) {
         try{
            List<OnlineClassDto> all = makeAllList(new ArrayList<>());
-           List<OnlineClassDto> interested = service.findByUserName(userName);
-           if(interested == null){
-               interested = new ArrayList<>();
-               for(OnlineClassDto dto : all){
-                   if(dto.getPopular()){
-                       interested.add(dto);
-                   }
-               }
-           }
-            all.removeAll(interested);
+           Set<String> interested =new HashSet<>(service.findByUsername(username));
 
-            interested.addAll(all);
-            return interested;
+           if(interested.isEmpty()){
+               return all;
+           }
+
+           List<OnlineClassDto> interest = new ArrayList<>();
+
+           for(String id : interested){
+               interest.addAll(makeCategoryList(id,interest));
+           }
+
+           all.removeAll(interest);
+           interest.addAll(all);
+
+          return interest;
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -143,8 +145,11 @@ public class OnlineClassService {
         return list;
     }
 
-    private List<OnlineClassDto> makeCategoryList(String category, ArrayList<OnlineClassDto> list) throws URISyntaxException, IOException {
+    private List<OnlineClassDto> makeCategoryList(String category, List<OnlineClassDto> list) throws URISyntaxException, IOException {
         try{
+            if(category.contains("/")){
+                category = category.split("/")[0];
+            }
             StringBuilder urlStr = new StringBuilder(startUrl).append("/")
                     .append(key).append("/").append(data).append("/")
                     .append("OnlineCoures").append("/")
@@ -179,7 +184,6 @@ public class OnlineClassService {
     private List<OnlineClassDto> makeList(StringBuilder urlStr,List<OnlineClassDto> list){
         try{
             URL url = (new URI(urlStr.toString())).toURL();
-
             JSONObject jsonObject = new JSONObject(readStreamToString(getNetworkConnection((HttpURLConnection) url.openConnection())))
                     .getJSONObject("OnlineCoures");
 
