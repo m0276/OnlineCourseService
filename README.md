@@ -1,3 +1,3 @@
-Use Spring security 6
-JPA
-MySql
+Use Spring security 6 /
+ JPA /
+ MySql
